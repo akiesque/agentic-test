@@ -1,0 +1,30 @@
+name: Run Globe Extraction Pipeline
+
+on:
+  workflow_dispatch: # lets you trigger it manually from GitHub's UI, for testing
+  # schedule:
+  #   - cron: '0 9 * * 1'   # uncomment later: every Monday 9am UTC
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the pipeline script
+        run: python jsonpydantic.py
+
+      - name: Upload the Excel output
+        uses: actions/upload-artifact@v4
+        with:
+          name: globe-report
+          path: globe_q2_2026.xlsx
